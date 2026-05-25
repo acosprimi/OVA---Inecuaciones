@@ -11,8 +11,17 @@
 
 <body class="landing">
 
-  <div class="landing-floating landing-floating-1"></div>
-  <div class="landing-floating landing-floating-2"></div>
+  <!-- Símbolos matemáticos flotando al fondo -->
+  <div class="float-symbol" style="top:8%;left:4%;font-size:3rem;animation-delay:0s;animation-duration:14s;">+</div>
+  <div class="float-symbol" style="top:18%;right:8%;font-size:3.5rem;animation-delay:1.5s;animation-duration:16s;">−</div>
+  <div class="float-symbol" style="top:42%;left:6%;font-size:2.4rem;animation-delay:3s;animation-duration:12s;">×</div>
+  <div class="float-symbol" style="top:58%;right:4%;font-size:4rem;animation-delay:.8s;animation-duration:18s;">÷</div>
+  <div class="float-symbol" style="top:75%;left:10%;font-size:2.6rem;animation-delay:5s;animation-duration:15s;">+</div>
+  <div class="float-symbol" style="top:28%;right:16%;font-size:2.2rem;animation-delay:2s;animation-duration:13s;">−</div>
+  <div class="float-symbol" style="top:82%;right:20%;font-size:3.2rem;animation-delay:4s;animation-duration:17s;">×</div>
+  <div class="float-symbol" style="top:12%;left:26%;font-size:2.4rem;animation-delay:6s;animation-duration:11s;">÷</div>
+  <div class="float-symbol" style="top:50%;left:36%;font-size:1.8rem;animation-delay:2.5s;animation-duration:19s;">+</div>
+  <div class="float-symbol" style="top:68%;left:52%;font-size:2.8rem;animation-delay:3.5s;animation-duration:14s;">−</div>
 
   <div class="container landing-hero">
     <div class="row align-items-center g-5 min-vh-100 py-5">
@@ -35,7 +44,7 @@
         </p>
 
         <a href="app.html" class="landing-cta">
-          Comenzar Aventura
+          ¡Comenzar Aventura!
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <line x1="5" y1="12" x2="19" y2="12"></line>
             <polyline points="12 5 19 12 12 19"></polyline>
@@ -44,39 +53,28 @@
       </div>
 
       <div class="col-lg-6 landing-visual" data-anim="slide">
-        <div class="landing-card-decoration">
-          <div class="landing-math-grid">
-            <div class="landing-math-item flex-column">
-              <span class="math-symbol purple">&gt;</span>
-              <span class="math-label">Mayor</span>
+        <div class="landing-dynamic">
+          <div class="dynamic-card">
+            <div class="symbol-row">
+              <span class="symbol-bubble">&gt;</span>
+              <span class="symbol-bubble">&lt;</span>
+              <span class="symbol-bubble">≥</span>
+              <span class="symbol-bubble">≤</span>
+              <span class="symbol-bubble">≠</span>
+              <span class="symbol-bubble">=</span>
             </div>
-            <div class="landing-math-item flex-column">
-              <span class="math-symbol fuchsia">&lt;</span>
-              <span class="math-label">Menor</span>
-            </div>
-            <div class="landing-math-item flex-column">
-              <span class="math-symbol cyan">&ge;</span>
-              <span class="math-label">Mayor o igual</span>
-            </div>
-            <div class="landing-math-item flex-column">
-              <span class="math-symbol amber">&le;</span>
-              <span class="math-label">Menor o igual</span>
-            </div>
-            <div class="landing-math-item flex-column">
-              <span class="math-symbol cyan">x</span>
-              <span class="math-label">Incógnita</span>
-            </div>
-            <div class="landing-math-item flex-column">
-              <span class="math-symbol purple">y</span>
-              <span class="math-label">Variable</span>
-            </div>
-            <div class="landing-math-item flex-column" style="grid-column: span 3;">
-              <span class="math-symbol" style="color: rgba(255,255,255,0.5); font-size: 1.1rem; letter-spacing: 1px;">
-                x + 3 <span style="color: var(--primary-light);">&gt;</span> 7
-              </span>
-              <span class="math-label">Ejemplo</span>
+
+            <div class="equation-scroll">
+              <div class="equation-track">
+                <span class="equation-item"><span class="eq-num">x</span> <span class="eq-sign">+</span> <span class="eq-num">5</span> <span class="eq-op">&gt;</span> <span class="eq-num">12</span></span>
+                <span class="equation-item"><span class="eq-num">3y</span> <span class="eq-op">≤</span> <span class="eq-num">9</span></span>
+                <span class="equation-item"><span class="eq-num">2a</span> <span class="eq-sign">−</span> <span class="eq-num">4</span> <span class="eq-op">&gt;</span> <span class="eq-num">6</span></span>
+                <span class="equation-item"><span class="eq-num">7</span> <span class="eq-sign">+</span> <span class="eq-num">b</span> <span class="eq-op">≥</span> <span class="eq-num">10</span></span>
+              </div>
             </div>
           </div>
+
+          <p class="dynamic-hint">✦ Descubre el mundo de las inecuaciones ✦</p>
         </div>
       </div>
 
