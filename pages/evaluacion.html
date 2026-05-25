@@ -1,0 +1,43 @@
+<div class="container py-4 content-fade-in">
+  <h1 class="text-center mb-2" style="color: var(--content-text);">Evaluaci&oacute;n de Inecuaciones</h1>
+  <p class="text-center mb-5" style="color: var(--text-muted);">Pon a prueba tu conocimiento matem&aacute;tico. Al finalizar obtendr&aacute;s una calificaci&oacute;n num&eacute;rica de 0.0 a 5.0.</p>
+
+  <div class="quiz-container">
+    <div class="card quiz-card shadow-lg border-0" id="quiz-main-card">
+
+      <div id="quiz-start-screen" class="text-center py-4">
+        <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3"
+          style="width: 70px; height: 70px; background: rgba(124, 58, 237, 0.1);">
+          <ion-icon name="person-outline" style="font-size: 2rem; color: var(--primary);"></ion-icon>
+        </div>
+        <h3 class="fw-bold mb-2" style="color: var(--content-text);">&iexcl;Bienvenido a la Evaluaci&oacute;n!</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1rem;">Ingresa tu nombre para comenzar</p>
+        <div class="d-flex flex-column align-items-center gap-3">
+          <input type="text" id="quiz-name-input" class="form-control text-center rounded-pill"
+            style="max-width: 320px; padding: 12px 20px; font-size: 1.05rem; font-weight: 500;"
+            placeholder="Tu nombre..." maxlength="50" autocomplete="off">
+          <small id="quiz-name-error" class="text-danger fw-semibold" style="display:none;">El nombre no puede contener n&uacute;meros.</small>
+          <button class="btn btn-adventure" onclick="empezarQuiz()">
+            Comenzar Evaluaci&oacute;n
+            <ion-icon name="arrow-forward-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+      <div id="quiz-content" style="display:none;">
+        <div class="quiz-progress">
+          <div class="quiz-progress-bar" id="quiz-progress-bar"></div>
+        </div>
+        <div class="quiz-question-num">Pregunta 1 de 20</div>
+        <div id="quiz-card-content" class="my-3"></div>
+        <div class="quiz-actions">
+          <button class="btn btn-outline-secondary px-4 py-2 rounded-pill fw-bold" id="quiz-btn-prev" onclick="quizPrevQuestion()">Anterior</button>
+          <button class="btn btn-primary px-4 py-2 rounded-pill fw-bold" id="quiz-btn-next" onclick="quizNextQuestion()">Siguiente</button>
+        </div>
+      </div>
+
+      <div id="quiz-results" style="display:none;"></div>
+
+    </div>
+  </div>
+</div>

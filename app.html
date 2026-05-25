@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ova - Inecuaciones</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="dark-mode">
+  <div class="menu">
+    <ion-icon name="menu-outline"></ion-icon>
+    <ion-icon name="close-outline"></ion-icon>
+  </div>
+
+  <div class="barra-lateral">
+    <div>
+      <div class="nombre-pagina">
+        <ion-icon id="logo" name="calculator-outline"></ion-icon>
+        <span>Inecuaciones</span>
+      </div>
+
+      <nav class="navegacion">
+        <ul>
+          <li>
+            <a href="#" data-page="contenido.html">
+              <ion-icon name="book-outline"></ion-icon>
+              <span>Contenido</span>
+            </a>
+          </li>
+
+          <li class="submenu">
+            <a href="#" class="submenu-btn">
+              <ion-icon name="pencil-sharp"></ion-icon>
+              <span>Actividades</span>
+              <ion-icon class="flecha" name="chevron-down-outline"></ion-icon>
+            </a>
+
+            <ul class="submenu-items">
+              <li><a href="#" data-page="actividad1.html"><span>Actividad 1</span></a></li>
+              <li><a href="#" data-page="actividad2.html"><span>Actividad 2</span></a></li>
+              <li><a href="#" data-page="actividad3.html"><span>Actividad 3</span></a></li>
+              <li><a href="#" data-page="actividad4.html"><span>Actividad 4</span></a></li>
+            </ul>
+          </li>
+
+          <li>
+            <a href="#" data-page="evaluacion.html">
+              <ion-icon name="checkmark-circle-outline"></ion-icon>
+              <span>Evaluación</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-page="recursos.html">
+              <ion-icon name="library"></ion-icon>
+              <span>Recursos</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" data-page="creditos.html">
+              <ion-icon name="people"></ion-icon>
+              <span>Créditos</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <div>
+      <div class="linea"></div>
+      <div class="modo-oscuro">
+        <div class="info">
+          <ion-icon name="moon-outline"></ion-icon>
+          <span>Oscuro</span>
+        </div>
+        <div class="switch">
+          <div class="base">
+            <div class="circulo prendido"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <div class="contenido-principal"></div>
+
+    <footer class="footer">
+      <img src="sources/unicordoba.png" alt="Logo Universidad de Córdoba">
+      <p>Universidad de Córdoba - Licenciatura en Informática | Semestre 3 | 2026</p>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+  <script src="codigo.js"></script>
+</body>
+
+</html>
