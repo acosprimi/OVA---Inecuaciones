@@ -12,7 +12,7 @@
   <div class="row g-4 mb-5">
 
     <div class="col-md-4">
-      <div class="card p-4 h-100 text-center border-0">
+      <div class="card btn-shine p-4 h-100 text-center">
         <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 mx-auto"
           style="width: 56px; height: 56px; background: rgba(124, 58, 237, 0.1);">
           <ion-icon name="help-circle-outline" style="font-size: 1.75rem; color: var(--primary);"></ion-icon>
@@ -23,7 +23,7 @@
     </div>
 
     <div class="col-md-4">
-      <div class="card p-4 h-100 text-center border-0">
+      <div class="card btn-shine p-4 h-100 text-center">
         <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 mx-auto"
           style="width: 56px; height: 56px; background: rgba(217, 70, 239, 0.1);">
           <ion-icon name="git-compare-outline" style="font-size: 1.75rem; color: var(--accent);"></ion-icon>
@@ -34,7 +34,7 @@
     </div>
 
     <div class="col-md-4">
-      <div class="card p-4 h-100 text-center border-0">
+      <div class="card btn-shine p-4 h-100 text-center">
         <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-3 mx-auto"
           style="width: 56px; height: 56px; background: rgba(8, 145, 178, 0.1);">
           <ion-icon name="rocket-outline" style="font-size: 1.75rem; color: var(--secondary);"></ion-icon>
@@ -46,7 +46,7 @@
 
   </div>
 
-  <div class="card p-4 mb-4 border-0">
+  <div class="card btn-shine p-4 mb-4">
     <div class="d-flex align-items-center gap-2 mb-3">
       <ion-icon name="bulb" style="color: var(--accent-warm); font-size: 1.5rem;"></ion-icon>
       <h4 class="m-0 fw-bold">Paso a Paso: Ejemplo Básico</h4>
@@ -79,6 +79,73 @@
     <p class="mb-0 fs-6" style="color: var(--text-muted);">
       <strong>Interpretación:</strong> La solución nos indica que cualquier número estrictamente mayor que 4 (por ejemplo: 5, 6, 7.5, 100...) satisface la inecuación original.
     </p>
+  </div>
+
+  <!-- SECCIÓN INTERACTIVA: BALANZA DE INECUACIONES -->
+  <div class="card btn-shine p-4 mb-4 text-center mt-5">
+    <div class="d-flex align-items-center justify-content-center gap-2 mb-3">
+      <ion-icon name="git-compare-outline" style="color: var(--primary); font-size: 1.8rem;"></ion-icon>
+      <h4 class="m-0 fw-bold">¡Juega con la Balanza de Desigualdades!</h4>
+    </div>
+    <p class="text-muted mb-4" style="font-size: 0.95rem;">Agrega o quita manzanas para ver cómo se inclina la balanza y cómo cambia la inecuación.</p>
+
+    <!-- La Balanza Visual -->
+    <div class="balance-wrapper mb-4">
+      <div class="balance-base-container">
+        <!-- El fulcro o punto de apoyo -->
+        <div class="balance-fulcrum"></div>
+        <!-- El brazo móvil -->
+        <div class="balance-beam" id="balance-beam">
+          <!-- Platillo Izquierdo -->
+          <div class="balance-pan balance-pan-left" id="pan-left">
+            <div class="pan-plate"></div>
+            <div class="pan-strings"></div>
+            <div class="pan-items-container" id="items-left">
+              <!-- Manzanas izquierdas se insertan aquí -->
+            </div>
+          </div>
+          <!-- Platillo Derecho -->
+          <div class="balance-pan balance-pan-right" id="pan-right">
+            <div class="pan-plate"></div>
+            <div class="pan-strings"></div>
+            <div class="pan-items-container" id="items-right">
+              <!-- Manzanas derechas se insertan aquí -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controles -->
+    <div class="d-flex flex-wrap justify-content-center gap-4 mb-4">
+      <div class="p-3 rounded-4 glass-card d-flex flex-column align-items-center gap-2" style="min-width: 160px; background: rgba(255, 107, 107, 0.05) !important;">
+        <span class="fw-bold text-danger">Lado Izquierdo</span>
+        <div class="d-flex gap-2 align-items-center">
+          <button class="btn btn-sm btn-danger rounded-circle" onclick="changeWeight('left', -1)" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;">-</button>
+          <span class="fs-4 fw-bold text-danger mx-2" id="val-left">3</span>
+          <button class="btn btn-sm btn-danger rounded-circle" onclick="changeWeight('left', 1)" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;">+</button>
+        </div>
+      </div>
+
+      <div class="d-flex align-items-center justify-content-center">
+        <!-- Signo Matemático Desigualdad -->
+        <span class="fs-1 fw-bold px-4 py-2 rounded-4" id="balance-sign" style="background: rgba(0,0,0,0.05); font-family: monospace; color: var(--primary);">?</span>
+      </div>
+
+      <div class="p-3 rounded-4 glass-card d-flex flex-column align-items-center gap-2" style="min-width: 160px; background: rgba(72, 219, 251, 0.05) !important;">
+        <span class="fw-bold text-info">Lado Derecho</span>
+        <div class="d-flex gap-2 align-items-center">
+          <button class="btn btn-sm btn-info text-white rounded-circle" onclick="changeWeight('right', -1)" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;">-</button>
+          <span class="fs-4 fw-bold text-info mx-2" id="val-right">3</span>
+          <button class="btn btn-sm btn-info text-white rounded-circle" onclick="changeWeight('right', 1)" style="width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.2rem;">+</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert alert-info py-2 rounded-4 m-0" style="display: inline-block;">
+      <span class="fw-semibold">Expresión resultante: </span>
+      <span class="font-monospace fw-bold fs-5 text-primary" id="inequality-expression">x = y</span>
+    </div>
   </div>
 
 </div>
