@@ -5,53 +5,139 @@ const palanca = document.querySelector(".switch");
 const circulo = document.querySelector(".circulo");
 const menu = document.querySelector(".menu");
 const main = document.querySelector("main");
+const overlay = document.querySelector(".sidebar-overlay");
 
+const pageTitles = {
+  "contenido.html": "Contenido",
+  "actividad1.html": "Actividad 1",
+  "actividad2.html": "Actividad 2",
+  "actividad3.html": "Actividad 3",
+  "actividad4.html": "Actividad 4",
+  "evaluacion.html": "Evaluación",
+  "recursos.html": "Recursos",
+  "creditos.html": "Créditos",
+};
+
+let confettiFrames = [];
+
+// ========== DARK MODE PERSISTENCE ==========
+function applyDarkMode(enabled) {
+  document.body.classList.toggle("dark-mode", enabled);
+  if (circulo) circulo.classList.toggle("prendido", enabled);
+  localStorage.setItem("ova-dark-mode", enabled ? "1" : "0");
+}
+
+const savedDarkMode = localStorage.getItem("ova-dark-mode");
+if (savedDarkMode === "1") applyDarkMode(true);
+
+// ========== SIDEBAR TOGGLE ==========
 menu.addEventListener("click", () => {
+  toggleSidebar();
+});
+
+menu.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" || e.key === " ") {
+    e.preventDefault();
+    toggleSidebar();
+  }
+});
+
+function toggleSidebar() {
   barraLateral.classList.toggle("max-barra-lateral");
   const isOpen = barraLateral.classList.contains("max-barra-lateral");
   menu.children[0].style.display = isOpen ? "none" : "block";
   menu.children[1].style.display = isOpen ? "block" : "none";
+  menu.setAttribute("aria-expanded", isOpen ? "true" : "false");
+  if (overlay) overlay.classList.toggle("active", isOpen);
   if (window.innerWidth <= 320) {
     barraLateral.classList.add("mini-barra-lateral");
     main.classList.add("min-main");
     spans.forEach((span) => span.classList.add("oculto"));
   }
+}
+
+// ========== SIDEBAR OVERLAY ==========
+if (overlay) {
+  overlay.addEventListener("click", () => {
+    closeSidebar();
+  });
+}
+
+function closeSidebar() {
+  barraLateral.classList.remove("max-barra-lateral");
+  menu.children[0].style.display = "block";
+  menu.children[1].style.display = "none";
+  menu.setAttribute("aria-expanded", "false");
+  if (overlay) overlay.classList.remove("active");
+}
+
+// ========== ESCAPE KEY TO CLOSE SIDEBAR ==========
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && barraLateral.classList.contains("max-barra-lateral")) {
+    closeSidebar();
+  }
 });
 
+// ========== SIDEBAR RESIZE HANDLER ==========
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 600 && barraLateral.classList.contains("max-barra-lateral")) {
+    barraLateral.classList.remove("max-barra-lateral");
+    menu.children[0].style.display = "block";
+    menu.children[1].style.display = "none";
+    menu.setAttribute("aria-expanded", "false");
+    if (overlay) overlay.classList.remove("active");
+  }
+});
+
+// ========== DARK MODE TOGGLE ==========
 palanca.addEventListener("click", () => {
-  document.body.classList.toggle("dark-mode");
-  circulo.classList.toggle("prendido");
+  const isDark = !document.body.classList.contains("dark-mode");
+  applyDarkMode(isDark);
 });
 
-logo.addEventListener("click", () => {
-  barraLateral.classList.toggle("mini-barra-lateral");
-  main.classList.toggle("min-main");
-  spans.forEach((span) => span.classList.toggle("oculto"));
-});
+// ========== LOGO CLICK (MINI SIDEBAR) ==========
+if (logo) {
+  logo.addEventListener("click", () => {
+    barraLateral.classList.toggle("mini-barra-lateral");
+    main.classList.toggle("min-main");
+    spans.forEach((span) => span.classList.toggle("oculto"));
+  });
+}
 
+// ========== SUBMENU ==========
 const submenuBtns = document.querySelectorAll(".submenu-btn");
 submenuBtns.forEach((btn) => {
   btn.addEventListener("click", (e) => {
     e.preventDefault();
-    btn.parentElement.classList.toggle("active");
+    const parent = btn.parentElement;
+    const isActive = parent.classList.toggle("active");
+    btn.setAttribute("aria-expanded", isActive ? "true" : "false");
   });
 });
 
+// ========== PAGE LOADER ==========
 const contenido = document.querySelector(".contenido-principal");
 const links = document.querySelectorAll("[data-page]");
 
 async function cargarPagina(page) {
+  // Cancel any running confetti
+  confettiFrames.forEach(id => cancelAnimationFrame(id));
+  confettiFrames = [];
+
+  contenido.innerHTML = '<div class="spinner"><div class="spinner-dot"></div><div class="spinner-dot"></div><div class="spinner-dot"></div></div>';
   try {
-    contenido.classList.remove("content-fade-in");
     const response = await fetch(`pages/${page}`);
     if (!response.ok) throw new Error("No se pudo cargar");
     const html = await response.text();
     contenido.innerHTML = html;
+    // Re-execute external scripts (e.g., H5P resizer)
+    contenido.querySelectorAll("script[src]").forEach((oldScript) => {
+      const newScript = document.createElement("script");
+      newScript.src = oldScript.src;
+      newScript.charset = oldScript.charset || "UTF-8";
+      document.body.appendChild(newScript);
+    });
     window.scrollTo(0, 0);
-    void contenido.offsetWidth;
-    contenido.classList.add("content-fade-in");
-    
-    // Configurar interacciones 3D dinámicas
     setupCardTilt();
     if (page === "evaluacion.html") inicializarQuiz();
     if (page === "contenido.html") {
@@ -62,6 +148,7 @@ async function cargarPagina(page) {
       <div class="text-center mt-5">
         <h1 class="gradient-text">Error de Carga</h1>
         <p style="color: var(--text-muted);">No se pudo cargar la secci\u00f3n solicitada.</p>
+        <button class="btn btn-primary mt-3 rounded-pill" onclick="cargarPagina('${page}')">Reintentar</button>
       </div>`;
   }
 }
@@ -70,13 +157,16 @@ links.forEach((link) => {
   link.addEventListener("click", (e) => {
     e.preventDefault();
     const page = link.dataset.page;
+    document.title = `${pageTitles[page] || "Inicio"} | Inecuaciones - OVA`;
     cargarPagina(page);
-    links.forEach((l) => l.classList.remove("active-link"));
+    links.forEach((l) => {
+      l.classList.remove("active-link");
+      l.removeAttribute("aria-current");
+    });
     link.classList.add("active-link");
+    link.setAttribute("aria-current", "page");
     if (window.innerWidth <= 600) {
-      barraLateral.classList.remove("max-barra-lateral");
-      menu.children[0].style.display = "block";
-      menu.children[1].style.display = "none";
+      closeSidebar();
     }
   });
 });
@@ -84,9 +174,10 @@ links.forEach((link) => {
 document.addEventListener("DOMContentLoaded", () => {
   cargarPagina("contenido.html");
   const primerLink = document.querySelector('[data-page="contenido.html"]');
-  if (primerLink) primerLink.classList.add("active-link");
-  
-  // Inicializar estela de chispas en el cursor
+  if (primerLink) {
+    primerLink.classList.add("active-link");
+    primerLink.setAttribute("aria-current", "page");
+  }
   initCursorSparkles();
 });
 
@@ -170,12 +261,12 @@ function renderQuestion() {
   let opts = "";
   q.options.forEach((opt, i) => {
     const sel = quizState.answers[quizState.currentQuestionIndex] === i;
-    opts += `<div class="quiz-option ${sel ? "selected" : ""}" onclick="selectQuizOption(${i})">
-      <span class="quiz-option-letter">${letters[i]}</span><span>${opt}</span></div>`;
+    opts += `<button class="quiz-option ${sel ? "selected" : ""}" onclick="selectQuizOption(${i})" tabindex="0" aria-pressed="${sel ? "true" : "false"}">
+      <span class="quiz-option-letter">${letters[i]}</span><span>${opt}</span></button>`;
   });
 
   container.innerHTML = `<h3 class="quiz-question-text">${q.question}</h3>
-    <div class="quiz-options">${opts}</div>`;
+    <div class="quiz-options" role="radiogroup">${opts}</div>`;
 
   const prev = document.getElementById("quiz-btn-prev");
   const next = document.getElementById("quiz-btn-next");
@@ -187,6 +278,16 @@ function renderQuestion() {
     next.disabled = !ok;
     next.style.opacity = ok ? "1" : "0.5";
   }
+
+  // Keyboard navigation for quiz options
+  container.querySelectorAll(".quiz-option").forEach((btn, idx) => {
+    btn.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        selectQuizOption(idx);
+      }
+    });
+  });
 }
 
 window.selectQuizOption = function (i) {
@@ -222,14 +323,14 @@ function mostrarResultados() {
 
   const calif = ((aciertos / preguntasQuiz.length) * 5.0).toFixed(1);
   let msg, color;
-  if (calif >= 4.0) { 
-    msg = "\u00a1Excelente trabajo! \u00a1Dominas las inecuaciones!"; 
-    color = "#10b981"; 
+  if (calif >= 4.0) {
+    msg = "\u00a1Excelente trabajo! \u00a1Dominas las inecuaciones!";
+    color = "#10b981";
     triggerConfetti();
   }
-  else if (calif >= 3.0) { 
-    msg = "\u00a1Aprobado! Buen esfuerzo, pero puedes mejorar."; 
-    color = "#3b82f6"; 
+  else if (calif >= 3.0) {
+    msg = "\u00a1Aprobado! Buen esfuerzo, pero puedes mejorar.";
+    color = "#3b82f6";
     triggerConfetti();
   }
   else { msg = "Sigue practicando. Revisa el contenido e int\u00e9ntalo de nuevo."; color = "#ef4444"; }
@@ -247,14 +348,10 @@ function mostrarResultados() {
       Reiniciar Evaluaci\u00f3n</button></div>`;
 }
 
-// ==========================================
-// NUEVAS FUNCIONALIDADES Y EFECTOS LINDOS 3D
-// ==========================================
-
-// 1. ROTACIÓN DINÁMICA 3D CON EL MOUSE
+// ========== EFECTOS 3D ==========
 function setupCardTilt() {
   const cards = document.querySelectorAll(".card, .team-card, .glass-card");
-  
+
   cards.forEach(card => {
     card.addEventListener("mouseleave", () => {
       card.style.transform = "";
@@ -266,20 +363,19 @@ function setupCardTilt() {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
+
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      
-      // Rotación máxima de 8 grados
+
       const rotateX = ((centerY - y) / centerY) * 8;
       const rotateY = ((x - centerX) / centerX) * 8;
-      
+
       card.style.transform = `translateY(-8px) scale(1.02) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
   });
 }
 
-// 2. BALANZA MATEMÁTICA INTERACTIVA
+// ========== BALANZA ==========
 let balanceWeights = { left: 3, right: 3 };
 
 window.changeWeight = function(side, amount) {
@@ -306,31 +402,28 @@ function updateBalance() {
   valLeft.textContent = balanceWeights.left;
   valRight.textContent = balanceWeights.right;
 
-  // Insertar manzanas con animación
   itemsLeft.innerHTML = Array(balanceWeights.left).fill('<div class="apple-weight"></div>').join('');
   itemsRight.innerHTML = Array(balanceWeights.right).fill('<div class="apple-weight"></div>').join('');
 
-  // Ángulo e inecuación resultante
   let angle = 0;
   let sign = "=";
 
   const diff = balanceWeights.left - balanceWeights.right;
   if (diff > 0) {
-    angle = -12; // Se inclina a la izquierda (rotación negativa)
+    angle = -12;
     sign = ">";
   } else if (diff < 0) {
-    angle = 12;  // Se inclina a la derecha (rotación positiva)
+    angle = 12;
     sign = "<";
   }
 
-  // Aplicar rotación física (y contrarrotación en los platillos para mantenerlos verticales)
   beam.style.transform = `rotate(${angle}deg)`;
   if (panL) panL.style.transform = `rotate(${-angle}deg)`;
   if (panR) panR.style.transform = `rotate(${-angle}deg)`;
 
   balanceSign.textContent = sign;
   expression.innerHTML = `Lado Izquierdo (${balanceWeights.left}) ${sign === '=' ? '=' : sign} Lado Derecho (${balanceWeights.right})`;
-  
+
   if (sign === "=") {
     balanceSign.style.color = "var(--text-muted)";
   } else if (sign === ">") {
@@ -345,7 +438,7 @@ window.inicializarBalanza = function() {
   updateBalance();
 };
 
-// 3. ESTELA DE CHISPAS EN EL CURSOR
+// ========== CHISPAS EN CURSOR ==========
 function initCursorSparkles() {
   const symbols = ["+", "−", "×", "÷", ">", "<", "★", "✦", "●", "◆"];
   const colors = ["#ff6b6b", "#ff9ff3", "#48dbfb", "#feca57", "#1dd1a1", "#a29bfe"];
@@ -368,10 +461,10 @@ function initCursorSparkles() {
     const el = document.createElement("div");
     el.className = "cursor-sparkle";
     el.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-    
+
     const size = Math.random() * 12 + 10;
     const color = colors[Math.floor(Math.random() * colors.length)];
-    
+
     const destX = (Math.random() - 0.5) * 60;
     const destY = -Math.random() * 80 - 20;
 
@@ -403,28 +496,28 @@ function initCursorSparkles() {
   }
 }
 
-// 4. CELEBRACIÓN DE CONFETI MULTICOLOR
+// ========== CONFETI ==========
 function triggerConfetti() {
   const container = document.body;
   const colors = ["#ff6b6b", "#ff9ff3", "#48dbfb", "#feca57", "#1dd1a1", "#a29bfe", "#ffffff"];
   const shapes = ["circle", "square", "triangle"];
 
-  for (let i = 0; i < 70; i++) {
+  for (let i = 0; i < 40; i++) {
     const el = document.createElement("div");
     el.className = "confetti-particle";
-    
+
     const size = Math.random() * 8 + 6;
     const color = colors[Math.floor(Math.random() * colors.length)];
     const shape = shapes[Math.floor(Math.random() * shapes.length)];
-    
+
     const startX = Math.random() * window.innerWidth;
     const startY = window.innerHeight + 10;
-    
+
     const angle = Math.random() * Math.PI - Math.PI / 2;
     const velocity = Math.random() * 15 + 10;
     const gravity = 0.4;
     const rotationSpeed = (Math.random() - 0.5) * 15;
-    
+
     el.style.cssText = `
       position: fixed;
       left: ${startX}px;
@@ -436,7 +529,7 @@ function triggerConfetti() {
       z-index: 10000;
       opacity: 0.9;
     `;
-    
+
     if (shape === "circle") {
       el.style.borderRadius = "50%";
     } else if (shape === "triangle") {
@@ -447,7 +540,7 @@ function triggerConfetti() {
       el.style.borderRight = `${size/2}px solid transparent`;
       el.style.borderBottom = `${size}px solid ${color}`;
     }
-    
+
     container.appendChild(el);
 
     let posX = startX;
@@ -455,7 +548,7 @@ function triggerConfetti() {
     let velX = Math.sin(angle) * velocity;
     let velY = -Math.cos(angle) * velocity;
     let rot = Math.random() * 360;
-    
+
     let life = 0;
     const maxLife = 120;
 
@@ -470,12 +563,12 @@ function triggerConfetti() {
       el.style.opacity = (1 - life / maxLife).toString();
 
       if (life < maxLife && posY < window.innerHeight + 50) {
-        requestAnimationFrame(update);
+        confettiFrames.push(requestAnimationFrame(update));
       } else {
         el.remove();
       }
     }
-    
-    requestAnimationFrame(update);
+
+    confettiFrames.push(requestAnimationFrame(update));
   }
 }
